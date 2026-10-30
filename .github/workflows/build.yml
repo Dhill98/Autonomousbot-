@@ -24,3 +24,12 @@ jobs: # the job it does is build our code on ubuntu.. it installs a arduino comm
     #the next step actually compiles the firmware for our esp32-s3 
       - name: Compile Rover Firmware
         run: arduino-cli compile --fqbn esp32:esp32:esp32s3 Rover/
+    # Added in unit testing to pipeline 
+      - name: Compile Unit Tests
+        run: |
+         mkdir -p build
+         g++ tests/test_obstacle_detection.cpp Rover/ObstacleDetection.cpp -o build/test_obstacle_detection
+
+      - name: Run Unit Tests
+        run: ./build/test_obstacle_detection
+     
