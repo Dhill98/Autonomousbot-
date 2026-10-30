@@ -1,0 +1,23 @@
+name: Rover CI # name of CI workflow
+
+on:
+  push:
+  workflow_dispatch: #for every push to the repository, the workflow will be triggered. The workflow can also be triggered manually from the Actions tab in the GitHub repository.
+
+jobs: # the job it does is build our code on ubuntu.. it installs a arduino command line then runs commands to install the esp32 board platform and then compiles the code for the esp32 board
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 board platform
+        run: | 
+          arduino-cli core update-index  --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json 
+          arduino-cli core install esp32:esp32 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+    #the next step actually compiles the firmware for our esp32-s3 
+      - name: Compile Rover Firmware
+        run: arduino-cli compile --fqbn esp32:esp32:esp32s3 Rover/
