@@ -1,7 +1,7 @@
 #visual
 import pygame
 from environment import room, start, goal
-from navigation import move_rover
+from navigation import move_rover ,bfs
 
 CELL_SIZE = 150
 
@@ -18,7 +18,17 @@ screen = pygame.display.set_mode((600, 600))
 pygame.display.set_caption("Rover Navigation Simulator")
 
 rover_position = start
+bfs(room, start, goal)
+path= bfs(room, start, goal)
+print("rover:",path )
+path_index = 0 
+if path_index == 0:
+  rover_position = path[path_index] # updates the rovers position using list indexing ..path has the sequence of positions to follow we are accessing the index in the path list
+  path_index += 1 #increment to next index , dont use a for loop becuase pygame will go thru it to fast and only give us the end destination 
 running = True
+
+move_delay =500
+last_move_time = pygame.time.get_ticks()
 
 while running:
     for event in pygame.event.get():
@@ -50,6 +60,12 @@ while running:
                 print(f"{direction.capitalize()} pressed")
                 print("current position", rover_position)
 
+    current_time = pygame.time.get_ticks()
+    if current_time - last_move_time >= move_delay:
+        if path_index < len(path):
+            rover_position = path[path_index]
+            path_index += 1
+        last_move_time = current_time
         
             # if event.key == pygame.K_RIGHT:
             #     old_position = rover_position

@@ -2,7 +2,7 @@
 #V1.0 grid based
 
 from environment import room, start, goal
-from navigation import move_rover
+from navigation import move_rover,bfs
 
 print("Rover starting is :", start)
 print("Rover goal is :", goal)
@@ -20,3 +20,6 @@ print("After moving left:", position)
 
 position = move_rover(room, position, "up")
 print("After moving up:", position)
+
+path_to_follow = bfs(room, start, goal)
+print("calculated path:", path_to_follow)
