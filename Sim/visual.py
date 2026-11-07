@@ -24,8 +24,8 @@ AUTO_MODE = "autonomous"
 
 def get_remote_command():
     try:
-        direction = command_queue.get_nowait()
-        return direction
+        command = command_queue.get_nowait()
+        return command 
     except Empty:
         return None
     
@@ -56,11 +56,51 @@ def main():
 
 
     while running:
-        remote_direction = get_remote_command()
+        #API CONTROLLED 
+        command = get_remote_command()
 
-        if (remote_direction is not None and rover_running and rover_mode == MANUAL_MODE):
-            rover_position = move_rover(room, rover_position, remote_direction)
-            print(f"Remote command received: {remote_direction}")
+        if command is not None:
+            command_type = command.get("type")
+
+            if command_type == "mode":
+                rover_mode = command.get("mode")
+                rover_running = False
+                print(f"Mode selected: {rover_mode}. Press Play to start.")
+
+            elif command_type == "stop":
+                rover_running = False
+                print("Rover stopped.")
+                
+            elif command_type == "move":
+                direction = command.get("direction")
+
+                if rover_position and rover_mode == MANUAL_MODE:
+                    rover_position = move_rover(room, rover_position, direction)
+
+            elif command_type == "start":
+                if rover_mode is None:
+                    print("Select a mode before starting.")
+                elif rover_running:
+                    print("Rover is already running.")
+                elif rover_mode == MANUAL_MODE:
+                    rover_running = True
+                    print("Manual rover started.")
+                elif rover_mode == AUTO_MODE:
+                    new_path = bfs(room, rover_position, goal)
+
+                    if new_path:
+                        path = new_path
+                        path_index = 0
+
+                        if path[0] == rover_position:
+                            path_index = 1
+
+                        last_move_time = pygame.time.get_ticks()
+                        rover_running = True
+                        print("Autonomous rover started.")
+                        print("Calculated path:", path)
+                    else:
+                        print("No path to destination found.")
 
         # Handle user input
         for event in pygame.event.get():
@@ -70,8 +110,8 @@ def main():
 
             elif event.type == pygame.KEYDOWN:
                 direction = None
-
-                # Select manual mode
+                #KEY BOARD CONTROLLED SAME LOGIC 
+                # Select manual mode. 
                 if event.key == pygame.K_m:
                     rover_mode = MANUAL_MODE
                     rover_running = False
