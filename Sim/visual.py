@@ -74,7 +74,7 @@ def main():
             elif command_type == "move":
                 direction = command.get("direction")
 
-                if rover_position and rover_mode == MANUAL_MODE:
+                if rover_running and rover_mode == MANUAL_MODE:
                     rover_position = move_rover(room, rover_position, direction)
 
             elif command_type == "start":
