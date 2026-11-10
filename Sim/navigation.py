@@ -8,6 +8,46 @@ directions = {
     "right": (0, 1),
 }
 
+def initialize_costGrid(room ,goal) : # this creates a cost grid initialized to infinity, with the goal cell set to 0 
+    rows = len(room)
+    cols = len(room[0])
+    infinite = float("inf")
+    goal_cell_cost=0
+    cost = []
+    for row in range(rows):
+        cost_row = []
+        for col in range(cols):
+            cost_row.append(infinite)
+        cost.append(cost_row)
+    goal_row, goal_col = goal
+
+    cost[goal_row][goal_col] = goal_cell_cost
+    return cost
+
+def calculate_cost(room ,goal):
+    costs = initialize_costGrid(room, goal)
+    changed = True
+    while changed:
+        changed = False
+        for row in range(len(room)):
+            for col in range(len(room[0])):
+                if not is_safe(room, row, col):
+                    continue
+                if costs[row][col] == 0:
+                    continue
+                for movement in directions.values(): # take all the movements in direction and calculate the cost of each neighboring cell
+                    neighboring_row = row + movement[0]
+                    neighboring_col = col + movement[1]
+                    if is_safe(room, neighboring_row, neighboring_col): # check if the neighboring cell is safe
+                        neighboring_cost = costs[neighboring_row][neighboring_col] + 1
+                        if neighboring_cost < costs[row][col]:
+                            costs[row][col] = neighboring_cost
+                            changed = True
+
+
+    return costs
+ 
+
 def is_safe(room,row,col):
     rows = len(room)
     cols = len(room[0])
@@ -63,5 +103,14 @@ def bfs(room,start,goal):
                 parent[new_position] = current_position # adds the parent location and new location to the hash so it can grow on its own
           
     return False
+
+if __name__ == "__main__":
+    from environment import room, goal
+
+    costs = calculate_cost(room, goal)
+
+    for cost in costs:
+        print(cost)
+
 
        
