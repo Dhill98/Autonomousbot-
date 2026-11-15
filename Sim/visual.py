@@ -1,12 +1,10 @@
 
 # visual.py
 
-import re
-
 import pygame
 import config
 from environment import room, start, goal
-from navigation import move_rover, bfs
+from navigation import *
 from queue import Empty
 from rover_state import command_queue
 
@@ -21,6 +19,7 @@ MOVE_DELAY = config.MOVE_DELAY
 
 MANUAL_MODE = "manual"
 AUTO_MODE = "autonomous"
+AUTO_PLANNER = "dp"
 
 def get_remote_command():
     try:
@@ -86,9 +85,9 @@ def main():
                     rover_running = True
                     print("Manual rover started.")
                 elif rover_mode == AUTO_MODE:
-                    new_path = bfs(room, rover_position, goal)
-
-                    if new_path:
+                    new_path = plan_path(room,rover_position,goal,AUTO_PLANNER)
+                
+                    if new_path and new_path[-1] == goal:
                         path = new_path
                         path_index = 0
 
@@ -125,7 +124,6 @@ def main():
 
                 # Start rover
                 elif event.key == pygame.K_s:
-
                     if rover_mode is None:
                         print("Select Manual (M) or Autonomous (A) first.")
 
@@ -138,9 +136,9 @@ def main():
 
                     elif rover_mode == AUTO_MODE:
                         # Calculate a new path from current position
-                        new_path = bfs(room, rover_position, goal)
+                        new_path = plan_path(room, rover_position, goal,AUTO_PLANNER)
 
-                        if new_path:
+                        if new_path and new_path[-1]== goal:
                             path = new_path
                             path_index = 0
 

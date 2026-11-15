@@ -46,8 +46,26 @@ def calculate_cost(room ,goal):
 
 
     return costs
- 
 
+def getNextPosition(room, position, costs):
+    current_row, current_col = position 
+    
+    if costs[current_row][current_col] == 0:
+        return None
+    best_cost = float("inf")
+    best_position = None
+    for direction in directions:
+        row_offset, col_offset = directions[direction]
+        next_row = current_row + row_offset
+        next_col = current_col + col_offset
+        if is_safe(room, next_row, next_col):
+            next_cost = costs[next_row][next_col]
+            if next_cost < best_cost:
+                best_cost =next_cost 
+                best_position = (next_row, next_col)
+
+    return best_position
+ 
 def is_safe(room,row,col):
     rows = len(room)
     cols = len(room[0])
@@ -70,7 +88,6 @@ def move_rover(room, position, direction):
     if is_safe(room, new_row, new_col):
         return (new_row, new_col)
     return position
-
 
 def bfs(room,start,goal):
     queue =deque([start]) # need to be a tuple so we have one complete location
@@ -104,6 +121,19 @@ def bfs(room,start,goal):
           
     return False
 
+def plan_path(room, start, goal, planner="bfs"):
+    if planner == "bfs":
+        return bfs(room, start, goal)
+    elif planner == "dp": 
+        costs = calculate_cost(room, goal) 
+        path = []
+        current_position = start
+        while current_position is not None:
+            path.append(current_position)
+            nextPosition =getNextPosition(room,current_position,costs)
+            current_position = nextPosition
+        return path 
+
 if __name__ == "__main__":
     from environment import room, goal
 
@@ -111,6 +141,7 @@ if __name__ == "__main__":
 
     for cost in costs:
         print(cost)
+        print(getNextPosition(room, (0, 0), costs))
 
 
        
