@@ -222,3 +222,143 @@
 2026-11-14 10:11:16,201 - werkzeug - INFO - 100.64.101.96 - - [14/Nov/2026 10:11:16] "POST /move HTTP/1.1" 200 -
 2026-11-14 10:11:17,653 - werkzeug - INFO - 100.64.101.96 - - [14/Nov/2026 10:11:17] "POST /move HTTP/1.1" 200 -
 2026-11-14 10:11:18,493 - werkzeug - INFO - 100.64.101.96 - - [14/Nov/2026 10:11:18] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:17:00,782 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://100.65.102.151:5001
+2026-11-19 17:17:00,782 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-19 17:18:40,077 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://100.65.102.151:5001
+2026-11-19 17:18:40,077 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-19 17:21:21,050 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:21] "GET / HTTP/1.1" 200 -
+2026-11-19 17:21:21,126 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:21] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-11-19 17:21:24,527 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:24] "POST /mode HTTP/1.1" 200 -
+2026-11-19 17:21:26,111 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:26] "POST /mode HTTP/1.1" 200 -
+2026-11-19 17:21:38,488 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:38] "POST /start HTTP/1.1" 200 -
+2026-11-19 17:21:39,190 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:39] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:40,601 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:40] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:43,260 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:43] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:44,256 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:44] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:46,593 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:46] "POST /mode HTTP/1.1" 200 -
+2026-11-19 17:21:47,648 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:47] "POST /start HTTP/1.1" 200 -
+2026-11-19 17:21:49,175 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:49] "POST /stop HTTP/1.1" 200 -
+2026-11-19 17:21:51,657 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:51] "POST /mode HTTP/1.1" 200 -
+2026-11-19 17:21:52,034 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:52] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:52,256 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:52] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:52,915 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:52] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:53,099 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:53] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:53,374 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:53] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:54,090 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:54] "POST /start HTTP/1.1" 200 -
+2026-11-19 17:21:54,620 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:54] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:54,806 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:54] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:21:55,006 - werkzeug - INFO - 127.0.0.1 - - [19/Nov/2026 17:21:55] "POST /move HTTP/1.1" 200 -
+2026-11-19 17:22:10,680 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://100.65.102.151:5001
+2026-11-19 17:22:10,680 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 15:46:57,579 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.69:5001
+2026-11-20 15:46:57,579 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 15:47:46,490 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:47:46] "GET / HTTP/1.1" 200 -
+2026-11-20 15:47:46,576 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:47:46] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-11-20 15:47:50,585 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:47:50] "POST /stop HTTP/1.1" 200 -
+2026-11-20 15:48:00,108 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:00] "POST /mode HTTP/1.1" 200 -
+2026-11-20 15:48:01,391 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:01] "POST /mode HTTP/1.1" 200 -
+2026-11-20 15:48:03,748 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:03] "POST /stop HTTP/1.1" 200 -
+2026-11-20 15:48:05,423 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:05] "POST /start HTTP/1.1" 200 -
+2026-11-20 15:48:07,069 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:07] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:08,651 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:08] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:09,318 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:09] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:15,378 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:15] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:15,652 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:15] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:15,842 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:15] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:16,869 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:16] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:17,370 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:17] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:17,579 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:17] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:17,937 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:17] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:18,151 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:18] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:19,446 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:19] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:19,655 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:19] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:21,028 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:21] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:21,206 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:21] "POST /move HTTP/1.1" 200 -
+2026-11-20 15:48:21,382 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 15:48:21] "POST /move HTTP/1.1" 200 -
+2026-11-20 16:20:51,862 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.69:5001
+2026-11-20 16:20:51,863 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 16:21:17,840 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:21:17] "GET / HTTP/1.1" 200 -
+2026-11-20 16:21:20,827 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:21:20] "POST /mode HTTP/1.1" 200 -
+2026-11-20 16:21:22,077 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:21:22] "POST /mode HTTP/1.1" 200 -
+2026-11-20 16:21:25,631 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:21:25] "POST /stop HTTP/1.1" 200 -
+2026-11-20 16:21:47,938 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:21:47] "POST /start HTTP/1.1" 200 -
+2026-11-20 16:21:53,154 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:21:53] "POST /move HTTP/1.1" 200 -
+2026-11-20 16:22:01,366 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:22:01] "POST /move HTTP/1.1" 200 -
+2026-11-20 16:22:01,546 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:22:01] "POST /move HTTP/1.1" 200 -
+2026-11-20 16:22:01,712 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:22:01] "POST /move HTTP/1.1" 200 -
+2026-11-20 16:22:09,264 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 16:22:09] "POST /stop HTTP/1.1" 200 -
+2026-11-20 17:27:06,093 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.69:5001
+2026-11-20 17:27:06,093 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 17:27:11,188 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:27:11] "GET / HTTP/1.1" 200 -
+2026-11-20 17:28:12,772 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.69:5001
+2026-11-20 17:28:12,772 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 17:28:29,212 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:28:29] "GET / HTTP/1.1" 200 -
+2026-11-20 17:28:29,585 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:28:29] "GET / HTTP/1.1" 200 -
+2026-11-20 17:28:31,422 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:28:31] "POST /mode HTTP/1.1" 200 -
+2026-11-20 17:28:32,644 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:28:32] "POST /mode HTTP/1.1" 200 -
+2026-11-20 17:28:34,920 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:28:34] "POST /stop HTTP/1.1" 200 -
+2026-11-20 17:28:39,550 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:28:39] "[35m[1mPOST /start HTTP/1.1[0m" 502 -
+2026-11-20 17:29:09,240 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:29:09] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:29:09,674 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:29:09] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:29:10,183 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:29:10] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:29:10,693 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:29:10] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:29:11,084 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:29:11] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:33:56,611 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.69:5001
+2026-11-20 17:33:56,611 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 17:34:01,034 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:01] "GET / HTTP/1.1" 200 -
+2026-11-20 17:34:03,656 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:03] "POST /mode HTTP/1.1" 200 -
+2026-11-20 17:34:05,892 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:05] "POST /mode HTTP/1.1" 200 -
+2026-11-20 17:34:08,033 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:08] "POST /stop HTTP/1.1" 200 -
+2026-11-20 17:34:08,739 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:08] "POST /start HTTP/1.1" 200 -
+2026-11-20 17:34:11,854 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:11] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:34:12,913 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:12] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:34:13,547 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:13] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:34:13,980 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:34:13] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:41:47,694 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.69:5001
+2026-11-20 17:41:47,694 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 17:41:50,739 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:41:50] "GET / HTTP/1.1" 200 -
+2026-11-20 17:41:51,110 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:41:51] "GET / HTTP/1.1" 200 -
+2026-11-20 17:41:56,174 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:41:56] "POST /mode HTTP/1.1" 200 -
+2026-11-20 17:41:58,457 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:41:58] "POST /mode HTTP/1.1" 200 -
+2026-11-20 17:42:00,886 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:42:00] "POST /stop HTTP/1.1" 200 -
+2026-11-20 17:42:06,283 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:42:06] "POST /start HTTP/1.1" 200 -
+2026-11-20 17:42:10,768 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:42:10] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:42:14,867 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:42:14] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:42:15,730 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:42:15] "POST /move HTTP/1.1" 200 -
+2026-11-20 17:42:17,258 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 17:42:17] "POST /move HTTP/1.1" 200 -
+2026-11-20 18:52:32,146 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.1.69:5001
+2026-11-20 18:52:32,146 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-11-20 18:52:35,851 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 18:52:35] "GET / HTTP/1.1" 200 -
+2026-11-20 18:52:38,532 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 18:52:38] "POST /mode HTTP/1.1" 200 -
+2026-11-20 18:52:42,048 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 18:52:42] "POST /mode HTTP/1.1" 200 -
+2026-11-20 18:52:43,163 - werkzeug - INFO - 127.0.0.1 - - [20/Nov/2026 18:52:43] "[35m[1mPOST /start HTTP/1.1[0m" 502 -
