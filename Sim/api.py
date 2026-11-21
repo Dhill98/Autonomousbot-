@@ -89,7 +89,7 @@ def start_rover():
     try:
         esp32_reply = send_esp32_commands("START")
     except OSError as error:
-        app.logger.warning("ESP32 start failure: ", error)
+        app.logger.warning("ESP32 start failure:  ", error)
         return jsonify({"error": "ESP32 did not confirm start"}), 502
     
     command_queue.put({"type": "start"})
