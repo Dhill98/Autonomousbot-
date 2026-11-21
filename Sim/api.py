@@ -1,6 +1,7 @@
 from flask import Flask, jsonify,request, render_template
 from rover_state import command_queue
 import logging
+import os
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import urlopen
@@ -16,7 +17,7 @@ logging.basicConfig(
 
 app = Flask(__name__)
 
-ESP32_BASE_URL = "http://192.168.1.88"
+ESP32_BASE_URL = os.environ.get("ESP32_BASE_URL", "http://192.168.1.88").rstrip("/")
 
 ESP32_COMMANDS = {
     "up": "FORWARD",
@@ -35,7 +36,7 @@ def send_esp32_commands(command):
 def home():
     return render_template("controller.html") # show the rover controller HTML page when you use api
 
-@app.route("/move", methods=["POST"])# end ppoints
+@app.route("/move", methods=["POST"])
 def move():
     data = request.get_json(silent=True)
 
@@ -43,23 +44,20 @@ def move():
         return jsonify({"error": "Expected a JSON object"}), 400
 
     direction = data.get("direction")
-    valid_moves = {"up", "down", "left", "right"}
-
-    if direction not in valid_moves:
+    if not isinstance(direction, str) or direction not in ESP32_COMMANDS:
         return jsonify({"error": "Invalid move direction"}), 400
-    
-    if direction in valid_moves:
-        command_queue.put({"type": "move", "direction": direction})
-        return jsonify({"status": f"Move command received: {direction}"}), 200
 
-    if direction in ESP32_COMMANDS:
-        command = ESP32_COMMANDS[direction] #checked if direction was in our commands then saved it to a new varible command that will take the direction in 
-        try:
-            esp32_reply = send_esp32_commands(command)
-        except OSError as error:
-            app.logger.error("COMMAND Failed %s" , error)
-            return jsonify({"error": "ESP32 cant get commands"}),502
-        return jsonify({" Succes":esp32_reply}),200
+    try:
+        esp32_reply = send_esp32_commands(ESP32_COMMANDS[direction])
+    except OSError as error:
+        app.logger.error("ESP32 move failed: %s", error)
+        return jsonify({"error": "ESP32 did not confirm movement"}), 502
+
+    command_queue.put({"type": "move", "direction": direction})
+    return jsonify({
+        "status": f"Move command received: {direction}",
+        "esp32_reply": esp32_reply,
+    }), 200
 
 @app.route("/status", methods=["GET"])
 def status():
@@ -89,7 +87,7 @@ def start_rover():
     try:
         esp32_reply = send_esp32_commands("START")
     except OSError as error:
-        app.logger.warning("ESP32 start failure:  ", error)
+        app.logger.warning("ESP32 start failure: %s", error)
         return jsonify({"error": "ESP32 did not confirm start"}), 502
     
     command_queue.put({"type": "start"})
@@ -101,7 +99,7 @@ def stop_rover():
     try:
         esp32_reply = send_esp32_commands("STOP")
     except OSError as error:
-        app.logger.warning("ESP32 stop failure: ", error)
+        app.logger.warning("ESP32 stop failure: %s", error)
         return jsonify({"error": "ESP32 did not confirm stop "}), 502
     
     return jsonify({"status": "Rover stopped"}), 200
