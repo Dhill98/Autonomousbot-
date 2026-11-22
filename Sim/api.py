@@ -1,7 +1,6 @@
 from flask import Flask, jsonify,request, render_template
 from rover_state import command_queue
 import logging
-import os
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import urlopen
@@ -17,7 +16,7 @@ logging.basicConfig(
 
 app = Flask(__name__)
 
-ESP32_BASE_URL = os.environ.get("ESP32_BASE_URL", "http://192.168.1.88").rstrip("/")
+ESP32_BASE_URL = "http://192.168.1.88"
 
 ESP32_COMMANDS = {
     "up": "FORWARD",
@@ -29,8 +28,11 @@ def send_esp32_commands(command):
     query = urlencode({"cmd":command})
     url =f"{ESP32_BASE_URL}/move?{query}"
 
-    with urlopen(url,timeout=2) as response:
-        return response.read().decode("utf-8")
+    app.logger.info("Sending ESP32 command %s", command)
+    with urlopen(url, timeout=5) as response:
+        reply = response.read().decode("utf-8")
+        app.logger.info("ESP32 %s returned HTTP %s: %s", command, response.status, reply)
+        return reply
 
 @app.route("/")
 def home():
