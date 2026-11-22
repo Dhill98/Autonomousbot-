@@ -27,13 +27,18 @@ ESP32_COMMANDS = {
 def send_esp32_commands(command):
     query = urlencode({"cmd":command})
     url =f"{ESP32_BASE_URL}/move?{query}"
-
     app.logger.info("Sending ESP32 command %s", command)
     with urlopen(url, timeout=5) as response:
         reply = response.read().decode("utf-8")
         app.logger.info("ESP32 %s returned HTTP %s: %s", command, response.status, reply)
         return reply
 
+def log_esp32_status():
+    url = f"{ESP32_BASE_URL}/status"
+    with urlopen(url, timeout = 5) as response:
+        status_txt = response.read().decode("utf-8")
+        app.logger.info("ESP32 Status %s", status_txt.strip())
+        
 @app.route("/")
 def home():
     return render_template("controller.html") # show the rover controller HTML page when you use api
@@ -63,6 +68,7 @@ def move():
 
 @app.route("/status", methods=["GET"])
 def status():
+
     return jsonify({"rover controller status": "Controller is online",
                     "mode": "None",
                     "rover_status": "False",
