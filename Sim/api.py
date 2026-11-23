@@ -35,9 +35,12 @@ def send_esp32_commands(command):
 
 def log_esp32_status():
     url = f"{ESP32_BASE_URL}/status"
-    with urlopen(url, timeout = 5) as response:
-        status_txt = response.read().decode("utf-8")
-        app.logger.info("ESP32 Status %s", status_txt.strip())
+    try:
+        with urlopen(url, timeout = 5) as response:
+            status_txt = response.read().decode("utf-8")
+            app.logger.info("ESP32 Status Success%s", status_txt.strip())
+    except OSError as error:
+        app.logger.warning(" ESP32 Status fail : The status is messed up %s", status_txt.srtrip())
         
 @app.route("/")
 def home():
