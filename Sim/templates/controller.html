@@ -79,58 +79,47 @@
         const leftButton = document.getElementById("left");
         const playButton = document.getElementById("play");
         const pauseButton = document.getElementById("pause");
-        const logs = document.getElementById("logs");
-        const mode_select = document.getElementById("mode");
-    
+        const modeSelect = document.getElementById("mode");
+        const classDemo = {{ config.get("CLASS_DEMO", false) | tojson }};
+        let driveRequests = Promise.resolve();
+
+        function sendDriveRequest(path, payload) {
+            const options = {method: "POST"};
+            if (payload) {
+                options.headers = {"Content-Type": "application/json"};
+                options.body = JSON.stringify(payload);
+            }
+            if (!classDemo) {
+                fetch(path, options);
+                return;
+            }
+            driveRequests = driveRequests
+                .then(() => fetch(path, options))
+                .catch(error => console.error("Rover request failed", error));
+        }
+
         playButton.addEventListener("click", function () {
-            fetch("/start", {
-                method: "POST" 
-            });
+            sendDriveRequest("/start", {mode: modeSelect.value});
         });
 
         pauseButton.addEventListener("click", function () {
-            fetch("/stop", {
-                method: "POST"
-            });
+            sendDriveRequest("/stop");
         });
         upButton.addEventListener("click", function () {
-            fetch("/move", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({direction: "up"})
-            });
+            sendDriveRequest("/move", {direction: "up"});
         });
         rightButton.addEventListener("click", function () {
-            fetch("/move", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({direction: "right"})
-            });
+            sendDriveRequest("/move", {direction: "right"});
         });
         downButton.addEventListener("click", function () {
-            fetch("/move", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({direction: "down"})
-            });
+            sendDriveRequest("/move", {direction: "down"});
         });
         leftButton.addEventListener("click", function () {
-            fetch("/move", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({direction: "left"})
-            });
+            sendDriveRequest("/move", {direction: "left"});
         });
-        mode_select.addEventListener("change", function () {
-            fetch("/mode", { // routes the request to the /mode endpoint in our api file 
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({mode: mode_select.value})
-                
-            });
+        modeSelect.addEventListener("change", function () {
+            sendDriveRequest("/mode", {mode: modeSelect.value});
         });
-        
-        
     </script>
 </body>
 </html>

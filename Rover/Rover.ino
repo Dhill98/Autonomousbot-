@@ -1,12 +1,18 @@
 #include <WiFi.h>
+#include <HTTPClient.h>
 #include <WebServer.h>
 #include <esp_system.h>
 #include <esp_camera.h>
 
-const char* ssid = "";
+const char* ssid = ""; // wifi username and password
 const char* password = "";
 
 WebServer server(80);
+
+// Use the computer's Wi-Fi IP
+const char* cameraUploadUrl = "";
+const unsigned long cameraIntervalMs = 3000;
+const uint16_t cameraUploadTimeoutMs = 1500;
 
 const int trigPin = 12;
 const int echoPin = 13;
@@ -26,6 +32,9 @@ const unsigned long movementDuration = 300;
 unsigned long movementStarted = 0;
 bool movementActive = false;
 bool driveEnabled = false;
+bool circleEnabled = false;
+const int circleInnerDuty = 160;  // 8-bit duty for the right motor.
+const int circlePwmChannel = 2;  // The camera uses channel 0.
 
 const unsigned long sensorInterval = 100;
 unsigned long lastSensorRead = 0;
@@ -52,7 +61,7 @@ bool networkInitialized = false;
 #define Y4_GPIO_NUM      19
 #define Y3_GPIO_NUM      18
 #define Y2_GPIO_NUM       5
-#define VSYNC_GPIO_NUM    5
+#define VSYNC_GPIO_NUM   25
 #define HREF_GPIO_NUM    23
 #define PCLK_GPIO_NUM    22
 
@@ -61,13 +70,14 @@ bool networkInitialized = false;
 #endif
 
 void handleStatus() { //straight chat function lol 
-  char body[256];
+  char body[300];
   snprintf(body, sizeof(body),
            "uptime_ms=%lu\nreset_reason=%d\nbrownout=%s\nwifi_rssi_dbm=%ld\n"
-           "drive_enabled=%s\nmotors_commanded=%s\nsensor=%s\ndistance_cm=%.1f\nclear_readings=%d/%d\n",
+           "circle_enabled=%s\ndrive_enabled=%s\nmotors_commanded=%s\nsensor=%s\ndistance_cm=%.1f\nclear_readings=%d/%d\n",
            millis(), static_cast<int>(esp_reset_reason()),
            esp_reset_reason() == ESP_RST_BROWNOUT ? "yes" : "no",
-           static_cast<long>(WiFi.RSSI()), driveEnabled ? "yes" : "no",
+           static_cast<long>(WiFi.RSSI()), circleEnabled ? "yes" : "no",
+           driveEnabled ? "yes" : "no",
            movementActive ? "yes" : "no", sensorState, lastDistance,
            clearReadings, requiredClearReadings);
   server.send(200, "text/plain", body);
@@ -76,7 +86,11 @@ void handleStatus() { //straight chat function lol
 void stopMotors() {
   digitalWrite(motorIN1, LOW);
   digitalWrite(motorIN2, LOW);
-  digitalWrite(motorIN3, LOW);
+  if (circleEnabled) {
+    ledcWrite(motorIN3, 0);
+  } else {
+    digitalWrite(motorIN3, LOW);
+  }
   digitalWrite(motorIN4, LOW);
 }
 
@@ -86,32 +100,49 @@ void cancelMovement() {
   movementActive = false;
 }
 
+void endCircle() {
+  if (circleEnabled) {
+    ledcDetach(motorIN3);
+    pinMode(motorIN3, OUTPUT);
+    digitalWrite(motorIN3, LOW);
+    circleEnabled = false;
+  }
+}
+
+void driveCircle() {
+  digitalWrite(motorIN1, LOW);
+  digitalWrite(motorIN2, HIGH);
+  digitalWrite(motorIN4, LOW);
+  ledcWrite(motorIN3, circleInnerDuty);
+  movementActive = true;
+}
+
 void moveForward() {
-  digitalWrite(motorIN1, HIGH);
-  digitalWrite(motorIN2, LOW);
+  digitalWrite(motorIN1, LOW);
+  digitalWrite(motorIN2, HIGH);
   digitalWrite(motorIN3, HIGH);
   digitalWrite(motorIN4, LOW);
 }
 
 void moveBackward() {
-  digitalWrite(motorIN1, LOW);
-  digitalWrite(motorIN2, HIGH);
+  digitalWrite(motorIN1, HIGH);
+  digitalWrite(motorIN2, LOW);
   digitalWrite(motorIN3, LOW);
   digitalWrite(motorIN4, HIGH);
 }
 
 void turnLeft() {
-  digitalWrite(motorIN1, LOW);
-  digitalWrite(motorIN2, HIGH);
+  digitalWrite(motorIN1, HIGH);
+  digitalWrite(motorIN2, LOW);
   digitalWrite(motorIN3, HIGH);
   digitalWrite(motorIN4, LOW);
 }
 
 void turnRight() {
-  digitalWrite(motorIN1, HIGH);
-  digitalWrite(motorIN2, LOW);
-  digitalWrite(motorIN3, LOW);
-  digitalWrite(motorIN4, HIGH);
+ digitalWrite(motorIN1, LOW);
+ digitalWrite(motorIN2, HIGH);
+ digitalWrite(motorIN3, LOW);
+ digitalWrite(motorIN4, HIGH);
 }
 
 bool shouldStop(float distance) {
@@ -163,12 +194,33 @@ void handleStartandStopCommand() {
   if (command == "STOP") {
     driveEnabled = false;
     cancelMovement();
+    endCircle();
     Serial.println("[drive] Disabled; motor outputs stopped");
     server.send(200, "text/plain", "Command accepted: STOP");
     return;
   }
 
+  if (command == "START_CIRCLE") {
+    if (!circleEnabled) {
+      cancelMovement();
+      driveEnabled = false;
+      if (!ledcAttachChannel(motorIN3, 1000, 8, circlePwmChannel)) {
+        server.send(503, "text/plain", "Circle motor PWM unavailable.");
+        return;
+      }
+      circleEnabled = true;
+      clearReadings = 0;
+    }
+    driveEnabled = true;
+    server.send(200, "text/plain", "Command accepted: START_CIRCLE");
+    return;
+  }
+
   if (command == "START") {
+    if (circleEnabled) {
+      cancelMovement();
+      endCircle();
+    }
     driveEnabled = true;
     Serial.println("[drive] Enabled");
     server.send(200, "text/plain", "Command accepted: START");
@@ -178,6 +230,11 @@ void handleStartandStopCommand() {
   if (!driveEnabled) {
     Serial.println("[drive] Rejected; send START first");
     server.send(409, "text/plain", "Press Play first.");
+    return;
+  }
+
+  if (circleEnabled) {
+    server.send(409, "text/plain", "Pause autonomous mode before manual driving.");
     return;
   }
 
@@ -217,6 +274,37 @@ void connectToWiFi() {
   }
 }
 
+// Camera capture and HTTP writes can wait, so run them outside the drive loop.
+void uploadCameraFrames(void*) {
+  const TickType_t interval = pdMS_TO_TICKS(cameraIntervalMs);
+  while(true) {
+    TickType_t started = xTaskGetTickCount();
+    if (WiFi.status() == WL_CONNECTED) {
+      camera_fb_t* frame = esp_camera_fb_get();
+      if (frame == nullptr) {
+        Serial.println("[camera] Capture failed");
+      } else {
+        HTTPClient http;
+        if (http.begin(cameraUploadUrl)) {
+          http.setConnectTimeout(cameraUploadTimeoutMs);
+          http.setTimeout(cameraUploadTimeoutMs);
+          http.addHeader("Content-Type", "image/jpeg");
+          int result = http.POST(frame->buf, frame->len);
+          Serial.printf("[camera] %u-byte frame, upload result %d\n",
+                        static_cast<unsigned int>(frame->len), result);
+          http.end();
+        } else {
+          Serial.println("[camera] Invalid upload URL");
+        }
+        esp_camera_fb_return(frame);
+      }
+    }
+
+    TickType_t elapsed = xTaskGetTickCount() - started;
+    vTaskDelay(elapsed < interval ? interval - elapsed : 1);
+  }
+}
+
 void initializedCamera(){
 //setting pins and config
   camera_config_t config = {};
@@ -237,7 +325,7 @@ void initializedCamera(){
     config.pin_sccb_sda = SIOD_GPIO_NUM;
     config.pin_sccb_scl = SIOC_GPIO_NUM;
 //speed ,size ,format and quality
-    config.xclk_freq_hz = 20000000;
+    config.xclk_freq_hz = 10000000; //mhz so 10 
     config.ledc_timer = LEDC_TIMER_0;
     config.ledc_channel = LEDC_CHANNEL_0;
     config.pixel_format =PIXFORMAT_JPEG;
@@ -247,6 +335,20 @@ void initializedCamera(){
     config.fb_location = CAMERA_FB_IN_DRAM;
     config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
 
+    if (psramFound()) {
+      Serial.println("PSRAM found! Using high resolution.");
+      config.frame_size = FRAMESIZE_SVGA;
+      config.jpeg_quality = 12;
+      config.fb_count = 2;
+      config.fb_location = CAMERA_FB_IN_PSRAM;
+    } else {
+      Serial.println("No PSRAM found! Falling back to DRAM.");
+      config.frame_size = FRAMESIZE_CIF; // Smaller resolution to fit in standard RAM
+      config.jpeg_quality = 12;
+      config.fb_count = 1;
+      config.fb_location = CAMERA_FB_IN_DRAM;
+  }
+
   esp_err_t result =esp_camera_init(&config); // take all your cam configs and pass to the built in func
 
   if(result != ESP_OK){
@@ -255,6 +357,14 @@ void initializedCamera(){
     return;
   }
   Serial.println(" Camera is initialized Success");
+  if (cameraUploadUrl[0] != '\0') {
+    if (xTaskCreate(uploadCameraFrames, "camera-upload", 8192, nullptr, 1, nullptr) != pdPASS) {
+      Serial.println("[camera] Could not start upload task");
+    }
+    return;
+  }
+
+  Serial.println("[camera] Set cameraUploadUrl to enable uploads");
   camera_fb_t* frame = esp_camera_fb_get();
   if (frame != nullptr) {
     Serial.println(" the frame size is :");
@@ -265,33 +375,42 @@ void initializedCamera(){
 }
 }
 
-void setup() {
+void handleCapture(){
 
+  
+
+  server.send(200, "text/plain", "got a photo");
+  
+}
+
+void setup() {
+  
   pinMode(bootLedPin, OUTPUT);
   digitalWrite(bootLedPin, LOW);
-
-
+  
+  
   Serial.begin(115200);
   esp_reset_reason_t resetReason = esp_reset_reason();
   Serial.printf("[boot] Reset reason %d%s\n", static_cast<int>(resetReason),
-                resetReason == ESP_RST_BROWNOUT ? " (brownout)" : "");
-
+  resetReason == ESP_RST_BROWNOUT ? " (brownout)" : "");
+  
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   digitalWrite(trigPin, LOW);
-
+  
   pinMode(motorIN1, OUTPUT);
   pinMode(motorIN2, OUTPUT);
   pinMode(motorIN3, OUTPUT);
   pinMode(motorIN4, OUTPUT);
   stopMotors();
-
+  
   connectToWiFi();
   if(networkInitialized){
     initializedCamera();
   }
-
+  
   if (networkInitialized) {
+    server.on("/capture" , HTTP_GET, handleCapture);
     server.on("/move", HTTP_GET, handleStartandStopCommand);
     server.on("/status", HTTP_GET, handleStatus);
     server.begin();
@@ -315,13 +434,17 @@ void loop() {
     }
   }
 
-  if (movementActive && millis() - movementStarted >= movementDuration) {
+  if (!circleEnabled && movementActive && millis() - movementStarted >= movementDuration) {
     cancelMovement();
     Serial.println("STOP: Movement timer expired");
   }
 
-  if (requestedCommand.length() != 0 && !wifiConnected) {
+  if (!wifiConnected && (circleEnabled || requestedCommand.length() != 0)) {
     cancelMovement();
+    if (circleEnabled) {
+      endCircle();
+      driveEnabled = false;
+    }
     Serial.println("STOP: Wi-Fi disconnected");
   }
 
@@ -337,28 +460,17 @@ void loop() {
     lastDiagnostic = millis();
   }
 
-  if (duration == 0) {
-    sensorState = "clear";
-    lastDistance = 0;
-    bool interruptedMove = requestedCommand.length() != 0;
-    if (logReading) {
-      Serial.println("[sensor] No echo within 30 ms; clear");
-    }
-  } else{
-
-  float objdistance = calculateDistance(duration);
-  lastDistance = objdistance;
-
-  if (shouldStop(objdistance)) {
+  // A timeout is treated as clear, as in manual mode.
+  lastDistance = calculateDistance(duration);
+  if (shouldStop(lastDistance)) {
     sensorState = "obstacle";
     clearReadings = 0;
-    bool interruptedMove = requestedCommand.length() != 0;
+    bool interruptedMove = movementActive || requestedCommand.length() != 0;
     cancelMovement();
     if (logReading || interruptedMove) {
-      Serial.printf("[sensor] Obstacle at %.1f cm; motors stopped\n", objdistance);
+      Serial.printf("[sensor] Obstacle at %.1f cm; motors stopped\n", lastDistance);
     }
     return;
-  }
   }
 
   if (clearReadings < requiredClearReadings) {
@@ -371,7 +483,17 @@ void loop() {
   }
 
   if (clearReadings < requiredClearReadings ||
-      movementActive || requestedCommand.length() == 0) {
+      movementActive || !driveEnabled) {
+    return;
+  }
+
+  if (circleEnabled) {
+    driveCircle();
+    Serial.println("[drive] Driving in a circle");
+    return;
+  }
+
+  if (requestedCommand.length() == 0) {
     return;
   }
 
